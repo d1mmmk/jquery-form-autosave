@@ -1,0 +1,87 @@
+
+<!DOCTYPE html>
+<html class="no-js">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title></title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width">
+    </head>
+    <body>
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+        <script src="jquery.form.autosave.js"></script>
+        <style type="text/css" media="screen">
+            .form_row {}
+            .form_row label {
+                width: 100px;
+                margin: 0 10px 0 0;
+                text-align: right;
+                display: inline-block;
+                vertical-align: top;
+            }
+        </style>
+        <form action="/save" method="post" data-autosave-name="form12321425">
+            <input type="hidden" name="id" value="1">
+            <input type="hidden" name="user_id" value="1">
+            <div class="form_row">
+                <label>от кого:</label>
+                <input type="text" name="mailfrom" id="" value="d1mmmk@gmail.com">
+            </div>
+            <div class="form_row">
+                <label>кому:</label>
+                <input type="text" name="mailto" id="">
+            </div>
+            <div class="form_row">
+                <label>сообщение:</label>
+                <textarea name="message" id="" cols="30" rows="10"></textarea>
+            </div>
+            <div class="form_row">
+                <span class="autosave_status"></span><br>
+                <input type="submit" value="отправить">
+                <input type="button" class="clear" value="очистить">
+            </div>
+        </form>
+
+        <script type="text/javascript">
+            jQuery(document).ready(function($){
+                $("form").autosave({
+                    ignore: ["mailfrom"],
+                    save: function(form){
+                        var save;
+                        var status = form.find('.autosave_status').show()
+                        status.text('сохраняю')
+                        form
+                        $.ajax({
+                            url: form.attr("action"),
+                            type: form.attr("method"),
+                            data: form.serialize(),
+                            success: function(res){
+                                clearTimeout(save);
+                                save = setTimeout(function(){
+                                    status.text('успешно сохранено')
+                                    save = setTimeout(function(){
+                                        status.hide(300)
+                                    },1000)
+                                },1000)
+                            },
+                            error: function(err){
+                                clearTimeout(save);
+                                save = setTimeout(function(){
+                                    status.text('что-то пошло не так')
+                                    save = setTimeout(function(){
+                                        status.hide(300)
+                                    },3000)
+                                },1000)
+                            }
+                        })
+                    }
+                })
+                $("form").on('click','.clear',function(e){
+                    e.preventDefault();
+                    $(this).closest('form').autosave.clear()
+                })  
+            })
+        </script>
+    </body>
+</html>
